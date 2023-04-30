@@ -12,12 +12,48 @@ use App\Services\PostService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
     public function __construct(protected PostService $service)
     {}
+    
+    /**
+     * List all posts
+     *
+     * @param  Request $request
+     * @return \Illuminate\Http\Resources\Json\ResourceCollection
+     */
+    public function index(Request $request): ResourceCollection
+    {
+        try {
+            $posts = $this->service->list();
+        } catch (Exception $exception) {
+            throw new PostException($exception->getMessage());
+        }
+
+        return PostResource::collection($posts);
+    }
+    
+    /**
+     * Show post
+     *
+     * @param  Request $request
+     * @param  Post $post
+     * @return App\Http\Resources\PostResource
+     */
+    public function show(Request $request, Post $post): PostResource
+    {
+        try {
+            $post = $this->service->read($post);
+        } catch (Exception $exception) {
+            throw new PostException($exception->getMessage());
+        }
+
+        return new PostResource($post);
+    }
     
     /**
      * Create new post

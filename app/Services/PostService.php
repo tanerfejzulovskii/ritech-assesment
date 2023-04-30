@@ -3,9 +3,31 @@
 namespace App\Services;
 
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Collection;
 
 class PostService
 {
+    /**
+     * List records
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function list(): Collection
+    {
+        return auth()->user()->posts;
+    }
+    
+    /**
+     * Read record
+     *
+     * @param  Post $post
+     * @return App\Models\Post
+     */
+    public function read(Post $post): Post
+    {
+        return $post;
+    }
+    
     /**
      * Store record
      *
@@ -40,6 +62,12 @@ class PostService
         return tap($post)->update($insertData); 
     }
     
+    /**
+     * Delete record
+     *
+     * @param Post $post
+     * @return void
+     */
     public function delete(Post $post)
     {
         return $post->delete();

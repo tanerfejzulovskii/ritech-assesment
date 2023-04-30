@@ -144,4 +144,39 @@ class PostsTest extends TestCase
             'id'    => $post->id
         ]);
     }
+    
+    public function test_list_posts(): void
+    {
+        $user = User::factory()->create();
+        
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
+        
+        $posts = Post::factory()->count(2)->create([
+            'author_id' => $user->id
+        ]);
+        
+        $response = $this->get("/api/posts/");
+        
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(2, 'data');
+    }
+    
+    public function test_read_post(): void
+    {
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
+        );
+        
+        $post = Post::factory()->create();
+        
+        $response = $this->get("/api/posts/{$post->id}");
+        
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(1);
+        $this->assertEquals($post->id, $response->json('data')['id']);
+    }
 }
