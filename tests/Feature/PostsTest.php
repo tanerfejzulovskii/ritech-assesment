@@ -161,6 +161,11 @@ class PostsTest extends TestCase
         $response = $this->get("/api/posts/");
         
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data',
+            'links',
+            'meta'
+        ]);
         $response->assertJsonCount(2, 'data');
     }
     
