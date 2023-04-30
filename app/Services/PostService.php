@@ -39,4 +39,9 @@ class PostService
 
         return tap($post)->update($insertData); 
     }
+    
+    public function delete(Post $post)
+    {
+        return $post->delete();
+    }
 }

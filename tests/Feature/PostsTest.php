@@ -126,4 +126,22 @@ class PostsTest extends TestCase
             'body'  => 'test body'
         ]);
     }
+    
+    public function test_delete_post(): void
+    {
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
+        );
+        
+        $post = Post::factory()->create();
+        
+        $response = $this->delete("/api/posts/{$post->id}");
+        
+        $response->assertStatus(Response::HTTP_OK);
+        
+        $this->assertDatabaseHas('posts', [
+            'id'    => $post->id
+        ]);
+    }
 }
