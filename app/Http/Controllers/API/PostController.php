@@ -10,7 +10,9 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
@@ -54,5 +56,26 @@ class PostController extends Controller
         }
 
         return new PostResource($post);
+    }
+    
+    /**
+     * Delete post
+     *
+     * @param  \Illuminate\Http\Request
+     * @param  App\Models\Post
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, Post $post): JsonResponse
+    {
+        try {
+            $post = $this->service->delete($post);
+        } catch (Exception $exception) {
+            throw new PostException($exception->getMessage());
+        }
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => 'Post removed successfully'
+        ]);
     }
 }
