@@ -3,18 +3,20 @@
 namespace App\Services;
 
 use App\Models\Post;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostService
 {
     /**
      * List records
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\\Pagination\\LengthAwarePaginator
      */
-    public function list(): Collection
+    public function list(): LengthAwarePaginator
     {
-        return auth()->user()->posts;
+        return auth()->user()
+                     ->posts()
+                     ->paginate(10);
     }
     
     /**
